@@ -16,12 +16,11 @@ import sys, os, arcpy
 #Allow arcpy to overwrite outputs
 arcpy.env.overwriteOutput = True
 
-# Set input variables (Hard-wired)
-#inputFile = 'V:\\ARGOSTracking\\Data\\ARGOSData\\1997dg.txt'
-inputFolder = 'V:/ARGOSTracking/Data/ARGOSData'
+# Set input variables user input
+inputFolder = arcpy.GetParameterAsText(0)
 inputFiles = os.listdir("V:\\ARGOSTracking\\Data\\ARGOSdata")
-outputFC = "V:/ARGOSTracking/Scratch/ARGOStrack.shp"
-outputSR = arcpy.SpatialReference(54002)
+outputFC = arcpy.GetParameterAsText(1)
+outputSR = arcpy.GetParameterAsText(2)
 
 #Create an empty feature class to which we'll add features
 outPath, outName = os.path.split(outputFC)
@@ -38,13 +37,15 @@ cur = arcpy.da.InsertCursor(outputFC, ['Shape@', 'TagID', 'LC', 'Date'])
 #Iterate through each ARGOS file
 inputFiles = os.listdir(inputFolder)
 for inputFile in inputFiles:
+    #Give me a status
+    arcpy.AddMessage("Processing {}.format(inputFile")
     #Don't process README file
     if inputFile == 'README.txt':
         continue
 
     #Add full path to input name
     inputFile_full = os.path.join(inputFolder, inputFile)
-    print(f"Processing {inputFile}")
+    
     
 
     # Open the ARGOS data file for reading
